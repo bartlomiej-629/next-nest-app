@@ -1,0 +1,8 @@
+node_modules
+.git
+.turbo
+.husky
+
+# Supabase
+apps/supabase-staging/volumes/db/data
+apps/supabase-staging/volumes/storage

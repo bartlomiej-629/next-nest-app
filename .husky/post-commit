@@ -1,0 +1,18 @@
+
+VERSION=$(bash scripts/generate-version.sh \
+    --env-file .env VERSION \
+    --env-file apps/frontend/.env.local NEXT_PUBLIC_APP_VERSION \
+    --env-file apps/backend/.env.local APP_VERSION \
+    --env-file apps/backend/.env.local API_VERSION)
+EXIT_CODE=$?
+
+# Check if the script executed successfully
+if [ $EXIT_CODE -ne 0 ]; then
+    echo "Error: Failed to generate version. Exit code: $EXIT_CODE" >&2
+    exit 1
+fi
+
+echo "Generated version: $VERSION"
+
+# Exit successfully
+exit 0

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "inputs": ["$TURBO_DEFAULT$", "**/.env*.local"],
+      "outputs": ["dist/**"]
+    },
+    "format": {},
+    "start": {
+      "cache": false,
+      "persistent": true
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "start:debug": {
+      "cache": false,
+      "persistent": true
+    },
+    "start:prod": {
+      "cache": false,
+      "persistent": true
+    },
+    "watch:dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "debug:dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {},
+    "lint:fix": {},
+    "test": {},
+    "test:watch": {},
+    "test:cov": {},
+    "test:debug": {},
+    "test:e2e": {}
+  }
+}

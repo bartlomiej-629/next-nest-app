@@ -1,0 +1,11 @@
+volumes/db/data
+volumes/storage
+
+authelia/config/configuration.yml
+
+nginx/*
+!nginx/snippets/
+nginx/snippets/authelia-authrequest.conf
+
+.env
+test.http

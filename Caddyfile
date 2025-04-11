@@ -1,0 +1,6 @@
+{$AUTHORITY} {
+	handle_path /api/* {
+		reverse_proxy {$BE_AUTHORITY}
+	}
+	reverse_proxy /* {$FE_AUTHORITY}
+}

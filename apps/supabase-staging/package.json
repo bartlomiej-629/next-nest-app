@@ -1,0 +1,14 @@
+{
+  "name": "supabase-docker",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "supabase:dev": "./scripts/launcher.sh dev:up",
+    "supabase:dev:up": "./scripts/launcher.sh dev:up",
+    "supabase:up": "./scripts/launcher.sh up",
+    "supabase:dev:stop": "./scripts/launcher.sh dev:up stop",
+    "supabase:stop": "./scripts/launcher.sh stop",
+    "supabase:dev:down": "./scripts/launcher.sh dev:down -v --remove-orphans",
+    "supabase:down": "./scripts/launcher.sh down -v --remove-orphans"
+  }
+}

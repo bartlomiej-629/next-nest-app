@@ -1,0 +1,85 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": [
+    "packages/typescript-config/*",
+    "apps/backend/.env*.local",
+    "apps/frontend/*.env*.local"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "**/.env*"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+
+    "format": {
+      "dependsOn": ["^format"]
+    },
+    "frontend:dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "backend:dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "start": {
+      "cache": false,
+      "persistent": true
+    },
+    "start:debug": {
+      "cache": false,
+      "persistent": true
+    },
+    "start:prod": {
+      "cache": false,
+      "persistent": true
+    },
+    "supabase:dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "supabase:up": {
+      "cache": false,
+      "persistent": true
+    },
+    "supabase:dev:stop": {
+      "cache": false,
+      "persistent": true
+    },
+    "supabase:stop": {
+      "cache": false,
+      "persistent": true
+    },
+    "supabase:dev:down": {
+      "cache": false,
+      "persistent": true
+    },
+    "supabase:down": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:check": {
+      "cache": false
+    },
+    "db:generate": {
+      "cache": false
+    },
+    "db:migrate": {
+      "cache": false
+    },
+    "db:push": {
+      "cache": false
+    },
+    "db:studio": {
+      "cache": false
+    }
+  }
+}

@@ -1,0 +1,2 @@
+# Ignore everything inside apps/supabase/
+apps/supabase-staging

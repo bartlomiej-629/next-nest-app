@@ -1,0 +1,14 @@
+services:
+  # Use Authelia as a more powerful alternative to Basic Auth
+  authelia:
+    container_name: authelia
+    image: authelia/authelia
+    restart: unless-stopped
+    expose:
+      - 9091
+    volumes:
+      - ./authelia/config:/config
+    environment:
+      TZ: "Europe/Berlin"
+    networks:
+      - appnet

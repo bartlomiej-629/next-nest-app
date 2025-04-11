@@ -1,0 +1,76 @@
+name: Deploy to Staging VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate_version:
+    name: Generate App Version String
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.create_version.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Fetch all history for all tags and branches
+
+      - name: Generate detailed version
+        id: create_version
+        run: |
+          VERSION=$(
+              scripts/generate-version.sh \
+                  --env-file .env VERSION \
+                  --env-file apps/frontend/.env.local NEXT_PUBLIC_APP_VERSION \
+                  --env-file apps/backend/.env.local APP_VERSION \
+                  --github-run-id "${GITHUB_RUN_ID}" \
+                  --github-run-attempt "${GITHUB_RUN_ATTEMPT}"
+          )
+          echo "version=${VERSION}" >>$GITHUB_OUTPUT
+
+  deploy_staging_vps:
+    name: Deploy to VPS (Staging)
+    needs: generate_version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Deploy to Staging VPS
+        uses: easingthemes/ssh-deploy@main
+        env:
+          VERSION: ${{ needs.generate_version.outputs.version }}
+          ENV_FILES_DIR: ${{ secrets.STAGING_VPS_ENV_FILES_DIR }}
+          TARGET: ${{ secrets.STAGING_VPS_TARGET }}
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.STAGING_VPS_SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.STAGING_VPS_HOST }}
+          REMOTE_USER: ${{ secrets.STAGING_VPS_USER }}
+          TARGET: ${{ secrets.STAGING_VPS_TARGET }}
+          SCRIPT_AFTER: |
+            cd ${{ env.TARGET }}
+            cp ${{ env.ENV_FILES_DIR }}/.env .env
+            cp ${{ env.ENV_FILES_DIR }}/backend.env.local apps/backend/.env.local
+            cp ${{ env.ENV_FILES_DIR }}/backend.env.production.local apps/backend/.env.production.local
+            cp ${{ env.ENV_FILES_DIR }}/frontend.env.local apps/frontend/.env.local
+            cp ${{ env.ENV_FILES_DIR }}/frontend.env.production.local apps/frontend/.env.production.local
+            cp ${{ env.ENV_FILES_DIR }}/.env.supabase apps/supabase-staging/.env
+
+            # inject generated version into env files for the root, frontend and backend
+            echo "VERSION=${{ env.VERSION }}" >> .env
+            echo "NEXT_PUBLIC_APP_VERSION=${{ env.VERSION }}" >> apps/frontend/.env.local
+            echo "VERSION=${{ env.VERSION }}" >> apps/backend/.env.local
+            echo "API_VERSION=${{ env.VERSION }}" >> apps/backend/.env.local
+
+            pnpm install
+            pnpm run docker:down
+            cd apps/supabase-staging
+            ./scripts/launcher.sh down --nginx
+            ./scripts/launcher.sh pull --nginx
+            cd - &> /dev/null
+            pnpm run docker:build
+            pnpm run docker:up -d --pull
+            cd apps/supabase-staging && ./scripts/launcher.sh up --nginx -d && cd - &> /dev/null
+          SCRIPT_AFTER_REQUIRED: true

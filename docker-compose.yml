@@ -1,0 +1,54 @@
+name: hijack
+
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: ./apps/frontend/Dockerfile
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - appnet
+
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: ./apps/backend/Dockerfile
+    restart: always
+    ports:
+      - 3001:3001
+    networks:
+      - appnet
+
+  caddy:
+    container_name: caddy
+    image: caddy:2.8.4
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      - AUTHORITY=${AUTHORITY}
+      - FE_AUTHORITY=${FE_AUTHORITY:-frontend:3000}
+      - BE_AUTHORITY=${BE_AUTHORITY:-backend:3001}
+    networks:
+      - appnet
+    
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+# Define a network, which allows containers to communicate
+# with each other, by using their container name as a hostname
+networks:
+  appnet:
+    name: appnet

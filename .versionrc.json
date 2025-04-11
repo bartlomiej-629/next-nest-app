@@ -1,0 +1,36 @@
+{
+  "types": [
+    {
+      "type": "feat",
+      "section": "New Features"
+    },
+    {
+      "type": "enha",
+      "section": "Enhancements"
+    },
+    {
+      "type": "fix",
+      "section": "Bug Fixes"
+    },
+    {
+      "type": "docs",
+      "hidden": true
+    },
+    {
+      "type": "style",
+      "hidden": true
+    },
+    {
+      "type": "webserver",
+      "hidden": true
+    },
+    {
+      "type": "release",
+      "hidden": true
+    }
+  ],
+  "commitUrlFormat": "https://github.com/noahstuesser/hijack/commit/{{hash}}",
+  "compareUrlFormat": "https://github.com/noahstuesser/hijack/compare/{{previousTag}}...{{currentTag}}",
+  "issueUrlFormat": "https://github.com/noahstuesser/hijack/issues/{{id}}",
+  "userUrlFormat": "https://github.com/{{user}}"
+}
